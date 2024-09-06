@@ -2,6 +2,7 @@ package com.nitinvarda.ecomerce.springecom.controller;
 
 
 import com.nitinvarda.ecomerce.springecom.model.Category;
+import com.nitinvarda.ecomerce.springecom.payload.CategoryResponse;
 import com.nitinvarda.ecomerce.springecom.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class CategoryController {
     }
 
     @GetMapping("/api/public/categories")
-    public ResponseEntity<List<Category>> getCategories(){
+    public ResponseEntity<CategoryResponse> getCategories(){
         return new ResponseEntity<>(categoryService.getAllCategories(),HttpStatus.OK);
     }
 
@@ -35,26 +36,14 @@ public class CategoryController {
 
     @DeleteMapping("/api/public/categories/{Id}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long Id){
-        try{
-            String status =  categoryService.deleteCategory(Id);
-            return  new ResponseEntity<>(status, HttpStatus.OK);
-        }
-        catch (ResponseStatusException e){
-            return new ResponseEntity<>(e.getReason(),e.getStatusCode());
-        }
-
+        String status =  categoryService.deleteCategory(Id);
+        return  new ResponseEntity<>(status, HttpStatus.OK);
     }
 
     @PutMapping("/api/public/categories/{categoryId}")
-    public ResponseEntity<String> updateCategory(@RequestBody Category category,@PathVariable Long categoryId){
-        try{
-            Category savedCategory = categoryService.updatedCategory(category,categoryId);
-            return new ResponseEntity<>("Category with categoryId: " + categoryId + " was Updated",HttpStatus.OK);
-
-        }
-        catch (ResponseStatusException e){
-            return new ResponseEntity<>(e.getReason(),e.getStatusCode());
-        }
+    public ResponseEntity<String> updateCategory(@Valid @RequestBody Category category,@PathVariable Long categoryId) {
+        Category savedCategory = categoryService.updatedCategory(category, categoryId);
+        return new ResponseEntity<>("Category with categoryId: " + categoryId + " was Updated", HttpStatus.OK);
     }
 
 }
